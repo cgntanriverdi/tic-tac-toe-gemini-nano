@@ -83,23 +83,39 @@ export default function Game()
 
   async function handleTest()
   {
+    if (calculateWinner(currentSquares) !== null)
+    {
+      setAnswer('Oyun bitti.');
+      return;
+    }
+
     setAnswer('Düşünüyor...');
 
     const aiSide = playerSide === 'X' ? 'O' : 'X';
     const humanSide = playerSide;
 
+    let move = null;
+    let source = '';
+
     const winMove = findWinningMove(currentSquares, aiSide);
     if (winMove !== null)
     {
-      setAnswer('Kazandiran hamle (kod): ' + winMove);
-      return;
+      move = winMove;
+      source = 'kazanma';
     }
-    const blockMove = findWinningMove(currentSquares, humanSide);
-    if (blockMove !== null)
+
+    if (move === null)
     {
-      setAnswer('Engelleme hamlesi (kod): ' + blockMove);
-      return;
+      const blockMove = findWinningMove(currentSquares, humanSide);
+      if (blockMove !== null)
+      {
+        move = blockMove;
+        source = 'engelleme';
+      }
     }
+
+    if (move === null)
+    {
     const boardText = currentSquares
       .map((value, index) => index + '=' + (value === null ? 'empty' : value))
       .join(', ');
@@ -148,14 +164,21 @@ FINAL ANSWER: <number>`;
 
     if (aiMove !== null && currentSquares[aiMove] === null)
     {
-      setAnswer('AI hamlesi: ' + aiMove);
+      move = aiMove;
+      source = 'AI';
     }
     else
     {
-
-      const fallbackMove = emptyCells[0];
-      setAnswer('AI gecersiz verdi, yedek hamle: ' + fallbackMove);
+      move = emptyCells[0];
+      source = 'yedek';
     }
+    }
+
+    const nextSquares = currentSquares.slice();
+    nextSquares[move] = aiSide;
+    handlePlay(nextSquares);
+
+    setAnswer('AI oynadi: ' + move + ' (' + source + ')');
   }
 
   const moves = history.map((squares, move) => 
