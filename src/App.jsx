@@ -137,7 +137,7 @@ Reply with ONLY one number from the empty cells. No explanation, no other text.`
     }
     else
     {
-      move = emptyCells[0];
+      move = pickFallbackMove(currentSquares);
     }
     }
 
@@ -243,6 +243,20 @@ function findWinningMove(squares, side)
       {
         return i;
       }
+    }
+  }
+  return null;
+}
+
+function pickFallbackMove(squares)
+{
+  const preference = [4, 0, 2, 6, 8, 1, 3, 5, 7]; 
+  for (let i = 0; i < preference.length; i++)
+  {
+    const cell = preference[i];
+    if (squares[cell] === null)
+    {
+      return cell;
     }
   }
   return null;
