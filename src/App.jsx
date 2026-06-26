@@ -88,6 +88,18 @@ export default function Game()
     const aiSide = playerSide === 'X' ? 'O' : 'X';
     const humanSide = playerSide;
 
+    const winMove = findWinningMove(currentSquares, aiSide);
+    if (winMove !== null)
+    {
+      setAnswer('Kazandiran hamle (kod): ' + winMove);
+      return;
+    }
+    const blockMove = findWinningMove(currentSquares, humanSide);
+    if (blockMove !== null)
+    {
+      setAnswer('Engelleme hamlesi (kod): ' + blockMove);
+      return;
+    }
     const boardText = currentSquares
       .map((value, index) => index + '=' + (value === null ? 'empty' : value))
       .join(', ');
@@ -131,11 +143,19 @@ FINAL ANSWER: <number>`;
     const session = await LanguageModel.create();
     const result = await session.prompt(prompt);
 
-    // Modelin uzun cevabının içinden "FINAL ANSWER: 4" kısmındaki sayıyı çekelim.
     const match = result.match(/FINAL ANSWER:\s*(\d)/i);
-    const move = match ? match[1] : result.trim();
+    const aiMove = match ? Number(match[1]) : null;
 
-    setAnswer(move);
+    if (aiMove !== null && currentSquares[aiMove] === null)
+    {
+      setAnswer('AI hamlesi: ' + aiMove);
+    }
+    else
+    {
+
+      const fallbackMove = emptyCells[0];
+      setAnswer('AI gecersiz verdi, yedek hamle: ' + fallbackMove);
+    }
   }
 
   const moves = history.map((squares, move) => 
@@ -195,12 +215,32 @@ function calculateWinner(squares)
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) 
+  for (let i = 0; i < lines.length; i++)
     {
     const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) 
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c])
         {
       return squares[a];
+    }
+  }
+  return null;
+}
+
+
+function findWinningMove(squares, side)
+{
+  for (let i = 0; i < squares.length; i++)
+  {
+    if (squares[i] === null)
+    {
+      const testSquares = squares.slice();
+
+      testSquares[i] = side;
+      
+      if (calculateWinner(testSquares) === side)
+      {
+        return i;
+      }
     }
   }
   return null;
