@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Square({ value, onSquareClick }) 
 {
@@ -29,11 +29,15 @@ function Board({ xIsNext, squares, onPlay })
   }
 
   const winner = calculateWinner(squares);
+  const isDraw = !winner && squares.every((cell) => cell !== null);
   let status;
-  if (winner) 
+  if (winner)
     {
     status = 'Winner: ' + winner;
-  } else 
+  } else if (isDraw)
+    {
+    status = 'Draw!';
+  } else
     {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
@@ -64,8 +68,8 @@ export default function Game()
 {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const [answer, setAnswer] = useState('');
   const [playerSide, setPlayerSide] = useState(null);
+  const [aiThinking, setAiThinking] = useState(false);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
@@ -81,27 +85,19 @@ export default function Game()
     setCurrentMove(nextMove);
   }
 
-  async function handleTest()
+  async function makeAiMove()
   {
-    if (calculateWinner(currentSquares) !== null)
-    {
-      setAnswer('Oyun bitti.');
-      return;
-    }
-
-    setAnswer('Düşünüyor...');
+    setAiThinking(true);
 
     const aiSide = playerSide === 'X' ? 'O' : 'X';
     const humanSide = playerSide;
 
     let move = null;
-    let source = '';
 
     const winMove = findWinningMove(currentSquares, aiSide);
     if (winMove !== null)
     {
       move = winMove;
-      source = 'kazanma';
     }
 
     if (move === null)
@@ -110,7 +106,6 @@ export default function Game()
       if (blockMove !== null)
       {
         move = blockMove;
-        source = 'engelleme';
       }
     }
 
@@ -124,53 +119,25 @@ export default function Game()
       .map((value, index) => (value === null ? index : null))
       .filter((index) => index !== null);
 
-    const prompt = `You are an expert tic-tac-toe player. You play as "${aiSide}". Your opponent plays as "${humanSide}".
-
-The board has 9 cells, indexed 0 to 8, laid out like this:
-0 | 1 | 2
-3 | 4 | 5
-6 | 7 | 8
-
-The 8 winning lines (three cells in a row) are:
-[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]
-
-To choose your move, go through these priorities IN ORDER and stop at the FIRST one that applies:
-A) WIN: a line that already has TWO "${aiSide}" and ONE empty cell. Take that empty cell to win.
-B) BLOCK: a line that already has TWO "${humanSide}" and ONE empty cell. Take that empty cell to block.
-C) CENTER: cell 4, if it is empty.
-D) CORNER: an empty corner (0, 2, 6, or 8).
-E) SIDE: an empty side (1, 3, 5, or 7).
-
-Rules:
-- You may ONLY choose an empty cell. The empty cells are: ${emptyCells.join(', ')}.
-- Check priority A on EVERY line first, then B on every line, then C, D, E.
-
-Here is a worked example so you understand the format:
-Cells: 0=O, 1=empty, 2=X, 3=empty, 4=X, 5=empty, 6=empty, 7=empty, 8=empty. You are "X".
-Reasoning: Line [2,4,6] is X, X, empty -> two "X" and one empty -> WIN by playing 6.
-FINAL ANSWER: 6
-
-Now solve THIS board.
-Current cells: ${boardText}
-
-Write your short step-by-step reasoning, then finish with one final line in EXACTLY this format:
-FINAL ANSWER: <number>`;
+    const prompt = `You are playing tic-tac-toe as "${aiSide}".
+Board cells 0-8: ${boardText}
+You may only play an empty cell. Empty cells: ${emptyCells.join(', ')}.
+Prefer the center (4), then a corner (0, 2, 6, 8), then a side (1, 3, 5, 7).
+Reply with ONLY one number from the empty cells. No explanation, no other text.`;
 
     const session = await LanguageModel.create();
     const result = await session.prompt(prompt);
 
-    const match = result.match(/FINAL ANSWER:\s*(\d)/i);
+    const match = result.match(/([0-8])/);
     const aiMove = match ? Number(match[1]) : null;
 
     if (aiMove !== null && currentSquares[aiMove] === null)
     {
       move = aiMove;
-      source = 'AI';
     }
     else
     {
       move = emptyCells[0];
-      source = 'yedek';
     }
     }
 
@@ -178,10 +145,24 @@ FINAL ANSWER: <number>`;
     nextSquares[move] = aiSide;
     handlePlay(nextSquares);
 
-    setAnswer('AI oynadi: ' + move + ' (' + source + ')');
+    setAiThinking(false);
   }
+  useEffect(() =>
+  {
+    if (playerSide === null) return;                            
+    if (calculateWinner(currentSquares) !== null) return;       
+    if (currentSquares.every((cell) => cell !== null)) return;  
 
-  const moves = history.map((squares, move) => 
+    const aiSide = playerSide === 'X' ? 'O' : 'X';
+    const sideToMove = xIsNext ? 'X' : 'O';
+
+    if (sideToMove === aiSide)
+    {
+      makeAiMove();
+    }
+  }, [currentMove, playerSide]);
+
+  const moves = history.map((squares, move) =>
     {
     let description;
     if (move > 0) 
@@ -215,12 +196,8 @@ FINAL ANSWER: <number>`;
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
+        {aiThinking ? <p className="ai-status">AI is thinking...</p> : null}
         <ol>{moves}</ol>
-      </div>
-
-      <div className="ai-test">
-        <button onClick={handleTest}>Test Nano</button>
-        <p>{answer}</p>
       </div>
     </div>
   );
