@@ -86,17 +86,56 @@ export default function Game()
     setAnswer('Düşünüyor...');
 
     const aiSide = playerSide === 'X' ? 'O' : 'X';
-    const board = JSON.stringify(currentSquares);
-    const prompt =
-      'We are playing tic-tac-toe. The board is an array of 9 cells, indexed 0 to 8. ' +
-      '"X" and "O" are taken cells, null is empty. ' +
-      'Current board: ' + board + '. ' +
-      'You are playing as "' + aiSide + '". ' +
-      'Reply with ONLY the index number (0-8) of the best empty cell for "' + aiSide + '" to play. DO NOT REPLY WITH ANYTHING ELSE THEN THE PROMPTED REQUEST.';
+    const humanSide = playerSide;
+
+    const boardText = currentSquares
+      .map((value, index) => index + '=' + (value === null ? 'empty' : value))
+      .join(', ');
+
+    const emptyCells = currentSquares
+      .map((value, index) => (value === null ? index : null))
+      .filter((index) => index !== null);
+
+    const prompt = `You are an expert tic-tac-toe player. You play as "${aiSide}". Your opponent plays as "${humanSide}".
+
+The board has 9 cells, indexed 0 to 8, laid out like this:
+0 | 1 | 2
+3 | 4 | 5
+6 | 7 | 8
+
+The 8 winning lines (three cells in a row) are:
+[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]
+
+To choose your move, go through these priorities IN ORDER and stop at the FIRST one that applies:
+A) WIN: a line that already has TWO "${aiSide}" and ONE empty cell. Take that empty cell to win.
+B) BLOCK: a line that already has TWO "${humanSide}" and ONE empty cell. Take that empty cell to block.
+C) CENTER: cell 4, if it is empty.
+D) CORNER: an empty corner (0, 2, 6, or 8).
+E) SIDE: an empty side (1, 3, 5, or 7).
+
+Rules:
+- You may ONLY choose an empty cell. The empty cells are: ${emptyCells.join(', ')}.
+- Check priority A on EVERY line first, then B on every line, then C, D, E.
+
+Here is a worked example so you understand the format:
+Cells: 0=O, 1=empty, 2=X, 3=empty, 4=X, 5=empty, 6=empty, 7=empty, 8=empty. You are "X".
+Reasoning: Line [2,4,6] is X, X, empty -> two "X" and one empty -> WIN by playing 6.
+FINAL ANSWER: 6
+
+Now solve THIS board.
+Current cells: ${boardText}
+
+Write your short step-by-step reasoning, then finish with one final line in EXACTLY this format:
+FINAL ANSWER: <number>`;
 
     const session = await LanguageModel.create();
     const result = await session.prompt(prompt);
-    setAnswer(result);
+
+    // Modelin uzun cevabının içinden "FINAL ANSWER: 4" kısmındaki sayıyı çekelim.
+    const match = result.match(/FINAL ANSWER:\s*(\d)/i);
+    const move = match ? match[1] : result.trim();
+
+    setAnswer(move);
   }
 
   const moves = history.map((squares, move) => 
