@@ -1,0 +1,42 @@
+
+:root {
+  /* ---- Elevation ---------------------------------------- */
+  /* Hairline card resting on the page (the dashboard cards) */
+  --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.03),
+               0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Resting button / small control */
+  --shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.04),
+               0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* Card with crisp 1px ring + soft drop  */
+  --shadow-card: 0 0 0 1px rgba(60, 66, 87, 0.06),
+                 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  /* Raised / dropdown / popover */
+  --shadow-md: 0 0 0 1px rgba(60, 66, 87, 0.05),
+               0 4px 12px rgba(0, 0, 0, 0.10);
+
+  /* Dialog / overlay */
+  --shadow-lg: 0 0 0 1px rgba(60, 66, 87, 0.04),
+               0 15px 35px rgba(60, 66, 87, 0.10),
+               0 5px 15px rgba(0, 0, 0, 0.08);
+
+  /* The famous deep marketing shadow */
+  --shadow-hero: 0 50px 100px -20px rgba(50, 50, 93, 0.25),
+                 0 30px 60px -30px rgba(0, 0, 0, 0.30);
+
+  /* Button primary — subtle blurple lift */
+  --shadow-button: 0 1px 1px rgba(0, 0, 0, 0.06),
+                   0 1px 2px rgba(0, 0, 0, 0.08);
+
+  /* ---- Focus ring -------------------------------------- */
+  --ring-focus: 0 0 0 3px var(--brand-ring);
+  --ring-focus-inset: inset 0 0 0 1px var(--brand);
+
+  /* ---- Transitions ------------------------------------- */
+  --ease: cubic-bezier(0.215, 0.61, 0.355, 1); /* @kind other */
+  --transition-fast: 120ms var(--ease);
+  --transition: 150ms var(--ease);
+  --transition-slow: 240ms var(--ease);
+}

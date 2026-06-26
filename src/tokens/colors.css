@@ -1,0 +1,110 @@
+:root {
+  /* ---- Brand / Blurple ---------------------------------- */
+  --blurple-50:  #F5F4FF;
+  --blurple-100: #E6E4FF;
+  --blurple-200: #C7C2FF;
+  --blurple-300: #A39BFF;
+  --blurple-400: #7A70FF;
+  --blurple-500: #635BFF;   /* core brand */
+  --blurple-600: #5A52E0;   /* button hover */
+  --blurple-700: #4F46C9;   /* button active */
+  --blurple-800: #3F3AA3;
+  --blurple-900: #2E2B73;
+
+  /* ---- Slate / Navy ---------- */
+  --navy-900: #0A2540;   /* hero / dark sections */
+  --navy-800: #163252;
+  --navy-700: #1A2B45;
+
+  /* ---- Neutral ink & gray ramp -------------------------- */
+  --gray-900: #1A1F36;   /* darkest heading ink */
+  --gray-800: #21252C;   /* dashboard h1 ink */
+  --gray-700: #2A2F45;
+  --gray-600: #3C4257;   /* body strong */
+  --gray-500: #545A69;
+  --gray-400: #687385;   /* secondary text */
+  --gray-300: #8792A2;   /* muted / placeholder */
+  --gray-250: #A3ACB9;
+  --gray-200: #C1C9D2;
+  --gray-150: #D5DBE1;
+  --gray-100: #E3E8EE;   /* default border */
+  --gray-75:  #EBEEF1;   /* hairline / subtle border */
+  --gray-50:  #F6F8FA;   /* sunken surface */
+  --gray-25:  #F7FAFC;   /* page tint */
+  --white:    #FFFFFF;
+
+  /* ---- Semantic accent families ------------------------- */
+  /* Green / success */
+  --green-50:  #CBF4C9;
+  --green-100: #A6EBB1;
+  --green-500: #228403;
+  --green-600: #0E6245;
+  --green-700: #006908;
+
+  /* Red / critical */
+  --red-50:  #FDE2DD;
+  --red-100: #FBC9C2;
+  --red-500: #DF1B41;
+  --red-600: #C0123C;
+  --red-700: #B3093C;
+
+  /* Orange / warning */
+  --orange-50:  #FCEDB9;
+  --orange-100: #F8E5A1;
+  --orange-500: #BB5504;
+  --orange-600: #983705;
+
+  /* Blue / info */
+  --blue-50:  #D6ECFF;
+  --blue-100: #A8D4FF;
+  --blue-500: #1F6FEB;
+  --blue-600: #3D4EAC;
+
+  /* Cyan accent */
+  --cyan-500: #06B6D4;
+  /* Violet accent (data viz) */
+  --violet-500: #9C6ADE;
+
+  /* ============================================================
+     SEMANTIC ALIASES  — use these in components
+     ============================================================ */
+  --brand:              var(--blurple-500);
+  --brand-hover:        var(--blurple-600);
+  --brand-active:       var(--blurple-700);
+  --brand-subtle:       var(--blurple-50);
+  --brand-ring:         rgba(99, 91, 255, 0.36);
+
+  /* Text */
+  --text-strong:        var(--gray-900);
+  --text-heading:       var(--gray-800);
+  --text-body:          var(--gray-600);
+  --text-secondary:     var(--gray-400);
+  --text-muted:         var(--gray-300);
+  --text-on-brand:      var(--white);
+  --text-link:          var(--blurple-500);
+
+  /* Surfaces */
+  --surface-page:       var(--white);
+  --surface-sunken:     var(--gray-50);
+  --surface-card:       var(--white);
+  --surface-hover:      var(--gray-50);
+  --surface-dark:       var(--navy-900);
+
+  /* Borders */
+  --border:             var(--gray-100);
+  --border-strong:      var(--gray-150);
+  --border-hairline:    var(--gray-75);
+  --border-focus:       var(--blurple-500);
+
+  /* Status — text / surface pairs */
+  --success-text:       var(--green-600);
+  --success-surface:    var(--green-50);
+  --critical-text:      var(--red-700);
+  --critical-surface:   var(--red-50);
+  --warning-text:       var(--orange-600);
+  --warning-surface:    var(--orange-50);
+  --info-text:          var(--blue-600);
+  --info-surface:       var(--blue-50);
+  --neutral-text:       var(--gray-500);
+  --neutral-surface:    var(--gray-100);
+}

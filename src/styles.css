@@ -1,42 +1,176 @@
+/* Stripe Design System tokens */
+@import "tokens/fonts.css";
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "tokens/effects.css";
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: sans-serif;
-  margin: 20px;
-  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  font-family: var(--font-sans);
+  color: var(--text-body);
+  background: var(--surface-sunken);
+}
+
+/* ---- Side selection screen ---- */
+.game-start {
+  padding: var(--space-10) var(--space-12);
+  text-align: center;
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.game-start h2 {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-h2);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-heading);
+}
+
+.game-start button {
+  min-width: 64px;
+  margin: 0 var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-sans);
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  color: var(--text-on-brand);
+  background: var(--brand);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-button);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.game-start button:hover {
+  background: var(--brand-hover);
+}
+
+.game-start button:active {
+  background: var(--brand-active);
+}
+
+.game-start button:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+/* ---- Game layout ---- */
+.game {
+  display: flex;
+  gap: var(--space-8);
+  align-items: flex-start;
+  padding: var(--space-8);
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---- Status line ---- */
+.status {
+  margin-bottom: var(--space-4);
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  color: var(--text-heading);
+}
+
+/* ---- Board ---- */
+.board-row {
+  display: flex;
 }
 
 .square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
+  width: 72px;
+  height: 72px;
+  margin: var(--space-1);
   padding: 0;
-  text-align: center;
-  width: 34px;
-}
-
-.board-row:after {
-  clear: both;
-  content: '';
-  display: table;
-}
-
-.status {
-  margin-bottom: 10px;
-}
-.game {
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 34px;
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--text-strong);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  transition: var(--transition);
 }
 
+.square:hover {
+  background: var(--surface-hover);
+}
+
+.square:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+.square-x {
+  color: var(--brand);
+}
+
+.square-o {
+  color: var(--navy-900);
+}
+
+/* ---- Move list / info ---- */
 .game-info {
-  margin-left: 20px;
+  min-width: 180px;
+}
+
+.ai-status {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--brand);
+}
+
+.game-info ol {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.game-info li {
+  margin-bottom: var(--space-2);
+}
+
+.game-info li button {
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-body);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.game-info li button:hover {
+  background: var(--surface-card);
+  border-color: var(--border-strong);
+}
+
+.game-info li button:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
 }

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 
-function Square({ value, onSquareClick }) 
+function Square({ value, onSquareClick })
 {
+  const valueClass = value ? ' square-' + value.toLowerCase() : '';
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className={'square' + valueClass} onClick={onSquareClick}>
       {value}
     </button>
   );
