@@ -65,6 +65,7 @@ export default function Game()
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const [answer, setAnswer] = useState('');
+  const [playerSide, setPlayerSide] = useState(null);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
@@ -84,12 +85,14 @@ export default function Game()
   {
     setAnswer('Düşünüyor...');
 
+    const aiSide = playerSide === 'X' ? 'O' : 'X';
     const board = JSON.stringify(currentSquares);
     const prompt =
       'We are playing tic-tac-toe. The board is an array of 9 cells, indexed 0 to 8. ' +
       '"X" and "O" are taken cells, null is empty. ' +
       'Current board: ' + board + '. ' +
-      'It is "O" turn. Reply with ONLY the index number (0-8) of the best empty cell to play. DO NOT REPLY WITH ANYTHING ELSE THEN THE PROMPTED REQUEST.';
+      'You are playing as "' + aiSide + '". ' +
+      'Reply with ONLY the index number (0-8) of the best empty cell for "' + aiSide + '" to play. DO NOT REPLY WITH ANYTHING ELSE THEN THE PROMPTED REQUEST.';
 
     const session = await LanguageModel.create();
     const result = await session.prompt(prompt);
@@ -112,6 +115,17 @@ export default function Game()
       </li>
     );
   });
+
+  if (playerSide === null)
+  {
+    return (
+      <div className="game-start">
+        <h2>Pick a side to play</h2>
+        <button onClick={() => setPlayerSide('X')}>X</button>
+        <button onClick={() => setPlayerSide('O')}>O</button>
+      </div>
+    );
+  }
 
   return (
     <div className="game">
