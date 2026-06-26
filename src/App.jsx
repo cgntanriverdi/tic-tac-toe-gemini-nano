@@ -9,11 +9,11 @@ function Square({ value, onSquareClick })
   );
 }
 
-function Board({ xIsNext, squares, onPlay }) 
+function Board({ xIsNext, squares, onPlay, disabled })
 {
-  function handleClick(i) 
+  function handleClick(i)
   {
-    if (calculateWinner(squares) || squares[i]) 
+    if (disabled || calculateWinner(squares) || squares[i])
         {
       return;
     }
@@ -189,11 +189,13 @@ Reply with ONLY one number from the empty cells. No explanation, no other text.`
       </div>
     );
   }
+  
+  const isHumanTurn = playerSide === (xIsNext ? 'X' : 'O');
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} disabled={!isHumanTurn} />
       </div>
       <div className="game-info">
         {aiThinking ? <p className="ai-status">AI is thinking...</p> : null}
