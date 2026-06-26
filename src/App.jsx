@@ -82,9 +82,17 @@ export default function Game()
 
   async function handleTest()
   {
-    setAnswer('Çalıştı');
+    setAnswer('Düşünüyor...');
+
+    const board = JSON.stringify(currentSquares);
+    const prompt =
+      'We are playing tic-tac-toe. The board is an array of 9 cells, indexed 0 to 8. ' +
+      '"X" and "O" are taken cells, null is empty. ' +
+      'Current board: ' + board + '. ' +
+      'It is "O" turn. Reply with ONLY the index number (0-8) of the best empty cell to play. DO NOT REPLY WITH ANYTHING ELSE THEN THE PROMPTED REQUEST.';
+
     const session = await LanguageModel.create();
-    const result = await session.prompt('Say hello in one word');
+    const result = await session.prompt(prompt);
     setAnswer(result);
   }
 
