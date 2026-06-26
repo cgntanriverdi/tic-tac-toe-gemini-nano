@@ -64,6 +64,7 @@ export default function Game()
 {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const [answer, setAnswer] = useState('');
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
@@ -74,9 +75,17 @@ export default function Game()
     setCurrentMove(nextHistory.length - 1);
   }
 
-  function jumpTo(nextMove) 
+  function jumpTo(nextMove)
   {
     setCurrentMove(nextMove);
+  }
+
+  async function handleTest()
+  {
+    setAnswer('Çalıştı');
+    const session = await LanguageModel.create();
+    const result = await session.prompt('Say hello in one word');
+    setAnswer(result);
   }
 
   const moves = history.map((squares, move) => 
@@ -103,6 +112,11 @@ export default function Game()
       </div>
       <div className="game-info">
         <ol>{moves}</ol>
+      </div>
+
+      <div className="ai-test">
+        <button onClick={handleTest}>Test Nano</button>
+        <p>{answer}</p>
       </div>
     </div>
   );
