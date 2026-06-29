@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { calculateWinner } from '../game/logic.js';
 import { getAiMove } from '../ai/getAiMove.js';
 import { Board } from './Board.jsx';
@@ -12,17 +12,17 @@ export default function Game()
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
-  function handlePlay(nextSquares)
+  const handlePlay = useCallback(function handlePlay(nextSquares)
   {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-  }
+  }, [history, currentMove]);
 
-  function jumpTo(nextMove)
+  const jumpTo = useCallback(function jumpTo(nextMove)
   {
     setCurrentMove(nextMove);
-  }
+  }, []);
 
   async function makeAiMove()
   {
@@ -54,7 +54,7 @@ export default function Game()
     }
   }, [currentMove, playerSide]);
 
-  const moves = history.map((squares, move) =>
+  const moves = useMemo(() => history.map((squares, move) =>
     {
     let description;
     if (move > 0)
@@ -69,7 +69,7 @@ export default function Game()
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
-  });
+  }), [history, jumpTo]);
 
   if (playerSide === null)
   {
