@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { calculateWinner, findWinningMove, pickFallbackMove } from './game/logic.js';
+import { calculateWinner } from './game/logic.js';
+import { getAiMove } from './ai/getAiMove.js';
 
 function Square({ value, onSquareClick })
 {
@@ -94,54 +95,7 @@ export default function Game()
     const aiSide = playerSide === 'X' ? 'O' : 'X';
     const humanSide = playerSide;
 
-    let move = null;
-
-    const winMove = findWinningMove(currentSquares, aiSide);
-    if (winMove !== null)
-    {
-      move = winMove;
-    }
-
-    if (move === null)
-    {
-      const blockMove = findWinningMove(currentSquares, humanSide);
-      if (blockMove !== null)
-      {
-        move = blockMove;
-      }
-    }
-
-    if (move === null)
-    {
-    const boardText = currentSquares
-      .map((value, index) => index + '=' + (value === null ? 'empty' : value))
-      .join(', ');
-
-    const emptyCells = currentSquares
-      .map((value, index) => (value === null ? index : null))
-      .filter((index) => index !== null);
-
-    const prompt = `You are playing tic-tac-toe as "${aiSide}".
-Board cells 0-8: ${boardText}
-You may only play an empty cell. Empty cells: ${emptyCells.join(', ')}.
-Prefer the center (4), then a corner (0, 2, 6, 8), then a side (1, 3, 5, 7).
-Reply with ONLY one number from the empty cells. No explanation, no other text.`;
-
-    const session = await LanguageModel.create();
-    const result = await session.prompt(prompt);
-
-    const match = result.match(/([0-8])/);
-    const aiMove = match ? Number(match[1]) : null;
-
-    if (aiMove !== null && currentSquares[aiMove] === null)
-    {
-      move = aiMove;
-    }
-    else
-    {
-      move = pickFallbackMove(currentSquares);
-    }
-    }
+    const move = await getAiMove(currentSquares, aiSide, humanSide);
 
     const nextSquares = currentSquares.slice();
     nextSquares[move] = aiSide;
